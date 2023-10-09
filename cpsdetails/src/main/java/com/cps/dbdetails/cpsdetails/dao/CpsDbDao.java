@@ -1,6 +1,5 @@
 package com.cps.dbdetails.cpsdetails.dao;
 
-import com.cps.dbdetails.cpsdetails.dto.ArticleCount;
 import com.cps.dbdetails.cpsdetails.dto.ArticleMetaData;
 import com.cps.dbdetails.cpsdetails.dto.CPSProdEntity;
 import com.cps.dbdetails.cpsdetails.mapper.AMDMapper;
@@ -29,7 +28,6 @@ public class CpsDbDao {
     CPSProdEntityMapper cpsprodmapper;
     @Autowired
     AMDMapper amdMapper;
-
     @Value(value = "${partition}")
     int partition;
     @Value(value = "${inputFile}")
@@ -76,14 +74,13 @@ public class CpsDbDao {
         String sql;
         RowMapper mapper = type.equalsIgnoreCase("amd") ? amdMapper : cpsprodmapper;
         if (type.equalsIgnoreCase("amd")) sql = SqlUtil.ARTICLEID.getSql();
-        else sql = SqlUtil.ARTICLECOUNT.getSql();
+        else sql = SqlUtil.FILENAME.getSql();
         String ext = list.stream().map(i -> "'" + i + "'").collect(Collectors.joining(","));
         System.out.println("ext " + ext);
         System.out.println(list.size());
         sql = sql + "(" + ext + ")";
-        sql+=" GROUP BY OUTPUTBUNDLENAME";
         System.out.println(sql);
-        List query = jdbcTemplate.query(sql, articleCountMapper);
+        List query = jdbcTemplate.query(sql, mapper);
         return query;
     }
 
@@ -92,7 +89,7 @@ public class CpsDbDao {
         System.out.println("No .of output lines " + records.size());
 
         if (!type.equalsIgnoreCase("amd"))
-            Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (ArticleCount) obj).map(ArticleCount::toString).toList(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (CPSProdEntity) obj).map(CPSProdEntity::toString).toList(), StandardOpenOption.APPEND);
         else
             Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (ArticleMetaData) obj).map(ArticleMetaData::toString).toList(), StandardOpenOption.APPEND);
     }
