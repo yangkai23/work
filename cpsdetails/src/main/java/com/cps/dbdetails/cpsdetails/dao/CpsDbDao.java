@@ -2,9 +2,11 @@ package com.cps.dbdetails.cpsdetails.dao;
 
 import com.cps.dbdetails.cpsdetails.dto.ArticleMetaData;
 import com.cps.dbdetails.cpsdetails.dto.CPSProdEntity;
+import com.cps.dbdetails.cpsdetails.dto.DfReprepare;
 import com.cps.dbdetails.cpsdetails.mapper.AMDMapper;
 import com.cps.dbdetails.cpsdetails.mapper.ArticleCountMapper;
 import com.cps.dbdetails.cpsdetails.mapper.CPSProdEntityMapper;
+import com.cps.dbdetails.cpsdetails.mapper.DfReprepareMapper;
 import com.cps.dbdetails.cpsdetails.util.SqlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +43,11 @@ public class CpsDbDao {
     @Autowired
     ArticleMetaData metaData;
 
+    @Autowired
+    DfReprepareMapper dfMapper;
+    @Autowired
+    DfReprepare reprepare;
+
     public void doService(String type) {
         System.out.println("Inside Service");
         List<String> lines;
@@ -53,7 +60,6 @@ public class CpsDbDao {
             String headers = fields.stream().collect(Collectors.joining(","));
             Files.write(Paths.get(outputFileLoc), List.of(headers));
             while (totalLines / partition >= 1) {
-
                 List<String> currList = lines.subList(0, partition);
 //                uniq=new TreeSet<>(currList);
                 List<?> records = getRecords(currList, type);
@@ -72,10 +78,10 @@ public class CpsDbDao {
 
     public List<?> getRecords(List<String> list, String type) {
         String sql;
-        RowMapper mapper = type.equalsIgnoreCase("amd") ? amdMapper : cpsprodmapper;
+        RowMapper mapper = type.equalsIgnoreCase("amd") ? amdMapper : dfMapper;
         if (type.equalsIgnoreCase("amd")) sql = SqlUtil.ARTICLEID.getSql();
-        else sql = SqlUtil.FILENAME.getSql();
-        String ext = list.stream().map(i -> "'" + i + "'").collect(Collectors.joining(","));
+        else sql = SqlUtil.DFReprepare.getSql();
+        String ext = list.stream().map(i -> "'" + i.trim() + "'").collect(Collectors.joining(","));
         System.out.println("ext " + ext);
         System.out.println(list.size());
         sql = sql + "(" + ext + ")";
@@ -89,7 +95,7 @@ public class CpsDbDao {
         System.out.println("No .of output lines " + records.size());
 
         if (!type.equalsIgnoreCase("amd"))
-            Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (CPSProdEntity) obj).map(CPSProdEntity::toString).toList(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (DfReprepare) obj).map(DfReprepare::toString).toList(), StandardOpenOption.APPEND);
         else
             Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (ArticleMetaData) obj).map(ArticleMetaData::toString).toList(), StandardOpenOption.APPEND);
     }
