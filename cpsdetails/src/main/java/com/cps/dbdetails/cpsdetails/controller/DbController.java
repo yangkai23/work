@@ -18,7 +18,10 @@ public class DbController {
 @GetMapping("/search")
 public String getDetailsUsingPrepId(@RequestParam String type) throws IOException {
     System.out.println("Inside Controller");
+long startTime=System.currentTimeMillis();
     service.doService(type);
+    long endTime=System.currentTimeMillis();
+    System.out.println("Time taken : "+(endTime-startTime)/1000);
     return "Success";
 }
 

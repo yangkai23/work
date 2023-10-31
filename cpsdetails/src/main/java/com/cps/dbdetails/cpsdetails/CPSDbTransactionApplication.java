@@ -14,5 +14,4 @@ public class CPSDbTransactionApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CPSDbTransactionApplication.class, args);
 	}
-
 }

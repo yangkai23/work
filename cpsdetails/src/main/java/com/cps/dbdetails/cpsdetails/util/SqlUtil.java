@@ -22,7 +22,10 @@ public enum SqlUtil {
             " LEFT JOIN contentset_provider        cp ON cp.id = orch.contentset_provider_id\n" +
             "LEFT JOIN PREPARATION_CONTENT_INFO PCI on PCI.ID = orch.PREPARATION_CONTENT_ID\n" +
             "where\n" +
-            "     df.delivery_file_name in ");
+            "     df.delivery_file_name in "),
+    Chub(
+//            "select * from chub.ch_object WHERE asset_id='urn:asset:29' AND file_name in "
+            "SELECT doc_pguid,file_path,file_name FROM chub.ch_object WHERE asset_id='urn:asset:29' AND file_name in ");
     private final String sql;
 
     SqlUtil(String sql) {
