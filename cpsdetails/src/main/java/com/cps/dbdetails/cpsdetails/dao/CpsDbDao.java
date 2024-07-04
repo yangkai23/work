@@ -60,7 +60,7 @@ public class CpsDbDao {
             List<String> fields = type.equalsIgnoreCase("amd") ? metaData.getFields() : entity.getFields();
             String headers = fields.stream().collect(Collectors.joining(","));
             Files.write(Paths.get(outputFileLoc), List.of(headers));
-            while (totalLines / partition >= 1) {
+          while (totalLines / partition >= 1) {
                 List<String> currList = lines.subList(0, partition);
 //                uniq=new TreeSet<>(currList);
                 List<?> records = getRecords(currList, type);
@@ -79,13 +79,13 @@ public class CpsDbDao {
 
     public List<?> getRecords(List<String> list, String type) {
         String sql;
-        RowMapper mapper = type.equalsIgnoreCase("amd") ? amdMapper : chubObjMapper;
+        RowMapper mapper = type.equalsIgnoreCase("amd") ? amdMapper : cpsprodmapper;
         if (type.equalsIgnoreCase("amd")) sql = SqlUtil.ARTICLEID.getSql();
-        else sql = SqlUtil.Chub.getSql();
+        else sql = SqlUtil.DELIVERYFILENAME.getSql();
         String ext = list.stream().map(i -> "'" + i.trim() + "'").collect(Collectors.joining(","));
         System.out.println("ext " + ext);
         System.out.println(list.size());
-        sql = sql + "(" + ext + ")";
+       sql = sql + "(" + ext + ")";
         System.out.println(sql);
         List query = jdbcTemplate.query(sql, mapper);
 //        List query = jdbcTemplate.query(sql, new );
@@ -97,7 +97,7 @@ public class CpsDbDao {
         System.out.println("No .of output lines " + records.size());
 
         if (!type.equalsIgnoreCase("amd"))
-            Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (ChubObject) obj).map(ChubObject::toString).toList(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (CPSProdEntity) obj).map(CPSProdEntity::toString).toList(), StandardOpenOption.APPEND);
         else
             Files.write(Paths.get(outputFileLoc), records.stream().map(obj -> (ArticleMetaData) obj).map(ArticleMetaData::toString).toList(), StandardOpenOption.APPEND);
     }

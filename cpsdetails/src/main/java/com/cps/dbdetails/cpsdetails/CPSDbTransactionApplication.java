@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- *
+ * @author Shanmukha Anirudh
  */
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.cps.dbdetails.cpsdetails"})

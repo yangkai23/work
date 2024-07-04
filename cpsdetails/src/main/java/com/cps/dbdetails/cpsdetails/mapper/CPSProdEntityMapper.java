@@ -12,7 +12,7 @@ public class CPSProdEntityMapper implements RowMapper<CPSProdEntity> {
     @Override
     public CPSProdEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
         CPSProdEntity entity=new CPSProdEntity();
-        System.out.println("Inside Mapper");
+//        System.out.println("Inside Mapper");
         entity.setName(rs.getString(1));
         entity.setReceiptId(rs.getString(2));
         entity.setPrepId(rs.getString(3));

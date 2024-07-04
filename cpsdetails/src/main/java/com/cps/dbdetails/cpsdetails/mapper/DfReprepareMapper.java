@@ -15,7 +15,8 @@ public class DfReprepareMapper implements RowMapper<DfReprepare> {
         reprepare.setFilename(rs.getString(2));
         reprepare.setContentInfo(rs.getString(3));
         reprepare.setDfname(rs.getString(4));
-        reprepare.setPguid(rs.getString(5));
+        reprepare.setWorkflow_id(rs.getString(5));
+        reprepare.setStatus(rs.getString(6));
         return reprepare;
     }
 }
